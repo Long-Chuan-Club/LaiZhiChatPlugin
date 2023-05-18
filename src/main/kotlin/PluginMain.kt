@@ -1,5 +1,6 @@
 package org.example.mirai.plugin
 
+import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.permission.AbstractPermitteeId
 import net.mamoe.mirai.console.permission.PermissionService
 import net.mamoe.mirai.console.permission.PermissionService.Companion.hasPermission
@@ -8,14 +9,9 @@ import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.event.GlobalEventChannel
-import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
-import net.mamoe.mirai.event.events.FriendMessageEvent
-import net.mamoe.mirai.event.events.GroupMessageEvent
-import net.mamoe.mirai.event.events.NewFriendRequestEvent
-import net.mamoe.mirai.message.data.Image
-import net.mamoe.mirai.message.data.Image.Key.queryUrl
-import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.utils.info
+import org.example.mirai.plugin.Command.GroupListener
+import org.example.mirai.plugin.Command.SomeChat
 
 /**
  * 使用 kotlin 版请把
@@ -34,15 +30,15 @@ import net.mamoe.mirai.utils.info
 
 object PluginMain : KotlinPlugin(
     JvmPluginDescription(
-        id = "org.example.mirai-example",
-        name = "插件示例",
-        version = "0.1.0"
+        id = "com.come_only.mirai-come",
+        name = "来只XX",
+        version = "0.1.1"
     ) {
-        author("作者名称或联系方式")
+        author("huvz")
         info(
             """
-            这是一个测试插件, 
-            在这里描述插件的功能和用法等.
+            群聊出现三只重复后 会自动复读
+            来只&来点 功能 将群友话语做成梗图
         """.trimIndent()
         )
         // author 和 info 可以删除.
@@ -51,49 +47,10 @@ object PluginMain : KotlinPlugin(
     override fun onEnable() {
         logger.info { "Plugin loaded" }
         //配置文件目录 "${dataFolder.absolutePath}/"
-        val eventChannel = GlobalEventChannel.parentScope(this)
-        eventChannel.subscribeAlways<GroupMessageEvent> {
-            //群消息
-            //复读示例
-            if (message.contentToString().startsWith("复读")) {
-                group.sendMessage(message.contentToString().replace("复读", ""))
-            }
-            if (message.contentToString() == "hi") {
-                //群内发送
-                group.sendMessage("hi")
-                //向发送者私聊发送消息
-                sender.sendMessage("hi")
-                //不继续处理
-                return@subscribeAlways
-            }
-            //分类示例
-            message.forEach {
-                //循环每个元素在消息里
-                if (it is Image) {
-                    //如果消息这一部分是图片
-                    val url = it.queryUrl()
-                    group.sendMessage("图片，下载地址$url")
-                }
-                if (it is PlainText) {
-                    //如果消息这一部分是纯文本
-                    group.sendMessage("纯文本，内容:${it.content}")
-                }
-            }
-        }
-        eventChannel.subscribeAlways<FriendMessageEvent> {
-            //好友信息
-            sender.sendMessage("hi")
-        }
-        eventChannel.subscribeAlways<NewFriendRequestEvent> {
-            //自动同意好友申请
-            accept()
-        }
-        eventChannel.subscribeAlways<BotInvitedJoinGroupRequestEvent> {
-            //自动同意加群申请
-            accept()
-        }
-
-        myCustomPermission // 注册权限
+        val groupService = GroupListener();
+        groupService.listenSend(GlobalEventChannel.parentScope(this));
+        CommandManager.registerCommand(SomeChat) // 注册指令
+        PluginMain.myCustomPermission // 注册权限
     }
 
     // region console 权限系统示例

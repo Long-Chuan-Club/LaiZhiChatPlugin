@@ -1,5 +1,7 @@
 package org.example.mirai.plugin.Command
 
+import net.mamoe.mirai.console.command.ConsoleCommandSender
+import net.mamoe.mirai.console.util.ContactUtils.getContact
 import net.mamoe.mirai.event.Event
 import net.mamoe.mirai.event.EventChannel
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
@@ -9,29 +11,25 @@ import net.mamoe.mirai.event.events.NewFriendRequestEvent
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.content
+import net.mamoe.mirai.utils.ExternalResource.Companion.sendAsImageTo
+import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
+import org.example.mirai.plugin.PluginMain
+import org.example.mirai.plugin.config.CommandList
+import org.example.mirai.plugin.util.ImageUtils
+import java.time.LocalTime
+import java.util.*
 
 class GroupListener
 {
+
     //统计复读出现次数
     fun listenSend(eventChannel: EventChannel<Event>){
         eventChannel.subscribeAlways<GroupMessageEvent> {
-            //群消息
-            //复读示例
+            //判断是否在指令列表中
+            var perfix = CommandList.values().find { message.content.startsWith(it.name) }?.name
+            var arg= perfix?.let { it1 -> message.content.removePrefix(it1) }
 
-            //hi功能
-            if (message.contentToString() == "hi") {
-                //群内发送
-                group.sendMessage("hi")
-                //向发送者私聊发送消息
-                sender.sendMessage("hi")
-                //不继续处理
-                return@subscribeAlways
-            }
-            //来只xx
-            if(message.contentToString().startsWith("来只"))
-            {
-
-            }
             //分类示例
             message.forEach {
                 //循环每个元素在消息里
@@ -45,19 +43,16 @@ class GroupListener
                     group.sendMessage("纯文本，内容:${it.content}")
                 }
             }
+
+
         }
-        eventChannel.subscribeAlways<FriendMessageEvent> {
-            //好友信息
-            sender.sendMessage("hi")
-        }
-        eventChannel.subscribeAlways<NewFriendRequestEvent> {
-            //自动同意好友申请
-            accept()
-        }
-        eventChannel.subscribeAlways<BotInvitedJoinGroupRequestEvent> {
-            //自动同意加群申请
-            accept()
-        }
+
+
+
+
+
+
+
     }
 
 

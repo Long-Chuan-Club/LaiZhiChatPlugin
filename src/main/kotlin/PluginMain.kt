@@ -38,16 +38,18 @@ object PluginMain : KotlinPlugin(
         logger.info { "Plugin loaded" }
          CommandManager.registerCommand(AddChat) // 注册指令
         //配置文件目录 "${dataFolder.absolutePath}/"
-        globalEventChannel().subscribeAlways<GroupMessageEvent> { it ->
+
+        globalEventChannel().subscribe<GroupMessageEvent> { it ->
             //获取指令
             var msg = it.message.content;
             var strname : String?
 
-            if(msg.startsWith("/clear"))
+
+            if(msg.startsWith("#clear"))
             {
                 var filename = msg.drop(6).trim()
-                if(  filename  in LzConfig.pdImageList)
-                    this.group.sendMessage(At(sender)+"这是受保护的图库，你无法删除噢")
+                if(  filename  in LzConfig.pdImageList && sender.id!=LzConfig.adminQQid)
+                    this.group.sendMessage(At(sender)+"这是受保护的图库，你无法删除噢(请联系管理员)")
                 else {
                     var file = File(PluginMain.dataFolderPath.toString()+"/$filename")
                     try {
@@ -60,24 +62,84 @@ object PluginMain : KotlinPlugin(
                 }
 
             }
-            for(eqstr  in LzConfig.GetcommandList){
-                if(msg.startsWith(eqstr)) {
-                        strname = msg.drop(eqstr.length).trim()
-                        it.Lzget(strname)
-                    break;
-                }
-            }
+
+            /**
+             *  匹配添加指令
+             */
             for(eqstr2 in LzConfig.AddcommandList){
                 if(msg.startsWith(eqstr2)){
                         strname = msg.drop(eqstr2.length).trim()
                         it.Lzsave(strname,it.sender)
-                    break;
+
+                    return@subscribe ListeningStatus.LISTENING
                 }
             }
+            if(msg.equals("#help")){
+                this.group.sendMessage(At(sender.id)+
+                    buildMessageChain {
+                        +"\n本群包括但不限于以下指令列表\n"
+                        +
+                        "1.获取xx图库\n(随机从图库中抽取一张发送)"
+                            +"\n检索关键字 直接随机抽取一张图片"
+                        +"\n2.创建xx图库\n(发送图片自动创建图库)"
+                        for(eqstr  in LzConfig.AddcommandList){
+                            +"\n    *[${eqstr}]"
+                        }
+                        +"\n3.清空xx图库\n**[#clear]"
+                        +"\n4.获取图库列表\n**[#获取图库]"
+                    }
 
+                )
 
+            }
+            /**
+             * 根据关键字匹配
+             */
+            var filenamelist = countFile()
+            for(eqstr  in filenamelist){
+                if(msg.contains(eqstr)) {
+
+                    it.Lzget(eqstr)
+
+                    return@subscribe ListeningStatus.LISTENING
+                }
+
+            }
+            if(msg.equals("#获取图库")){
+                val files = File(PluginMain.dataFolder.absolutePath).listFiles()
+                var cnt = 0;
+                this.group.sendMessage(
+
+                    buildMessageChain {At(sender.id)
+                        +"检索到的图库如下:\n"
+                        for(s in files!!)
+                        {
+                            cnt++;
+                            +PlainText("File>${cnt}:${s.name}.size():${(s.listFiles()?.size ?: 0)}\n")
+                        }
+
+                    }
+
+                )
+            }
+            return@subscribe ListeningStatus.LISTENING
         }
 
+
+    }
+
+    /**
+     * 更新文件list
+     * 用来匹配关键字
+     * 从长到短进行匹配,防止最小的匹配到
+     */
+    private  fun countFile(): List<String> {
+        var filenamelist = mutableListOf<String>();
+        var filelist= File(PluginMain.dataFolder.absolutePath).listFiles();
+        for(f in filelist!!){
+            filenamelist.add(f.name)
+        }
+        return filenamelist.sortedBy{ it.length }.reversed();
     }
     private suspend fun GroupMessageEvent.Lzget(arg: String?) {
         if (arg != null) {
@@ -89,36 +151,32 @@ object PluginMain : KotlinPlugin(
                     var img = res.uploadAsImage(it)
                     this.group.sendMessage(img);
                 }
+                res.closed
             } else {
                 this.group.sendMessage("目录下找不到图片噢")
             }
-
         }
     }
     private suspend fun GroupMessageEvent.Lzsave(arg: String?,sender1: Member)
     {
         this.group.sendMessage(At(sender1)+"请在1000ms内发送一张图片")
-        var tim1 = Instant.now().epochSecond
+        var ti1m1 = Instant.now().epochSecond
         globalEventChannel().subscribe<GroupMessageEvent>{
+            if((Instant.now().epochSecond-ti1m1)>=10){
+                this.group.sendMessage(buildMessageChain{
+                    At(sender1.id)
+                    +"已超时，请重新发送图片"
+                } )
+                return@subscribe ListeningStatus.STOPPED
+            }
             if(this.sender.id == sender1.id){
                 var chain = this.message;
                 val image: Image? = chain.findIsInstance<Image>()
-                if(Instant.now().epochSecond-tim1>=10){
-                    val quote: QuoteReply? = chain[QuoteReply]
-                    this.group.sendMessage(buildMessageChain{
-                        if (quote != null) {+quote}
-                        +"已超时，请重新发送图片"
-                    } )
-                    return@subscribe ListeningStatus.STOPPED
-                }
+
                 if(image!=null) {
-                    logger.info("提取到图片${image.imageId}")
+
                     arg?.let { it1 -> ImageUtils.saveImage(it1,image) }
                     this.group.sendMessage(chain+ PlainText("保存成功噢"));
-                    return@subscribe ListeningStatus.STOPPED
-                }
-                else {
-                    this.group.sendMessage(PlainText("没有找到图片噢"));
                     return@subscribe ListeningStatus.STOPPED
                 }
 

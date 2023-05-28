@@ -14,7 +14,7 @@ import org.example.mirai.plugin.util.ImageUtils
 import java.io.File
 import java.util.stream.Collectors
 
-object AddChat :SimpleCommand(PluginMain,"listImage",description = "获取某个人的图库") {
+object AddChat :SimpleCommand(PluginMain,"获取图库",description = "获取全部的图库列表") {
 
     @Handler
     suspend fun handlerlist(sender: CommandSender){

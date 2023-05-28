@@ -30,7 +30,7 @@ object PluginMain : KotlinPlugin(
     JvmPluginDescription(
         id = "com.come_only.mirai-come",
         name = "来只XX",
-        version = "0.1.2"
+        version = "0.1.3"
     ) {
         author("huvz")
         info(
@@ -50,6 +50,27 @@ object PluginMain : KotlinPlugin(
             //获取指令
             var msg = it.message.content;
             var strname : String?
+
+            if(msg.startsWith("/clear"))
+            {
+                if(sender.id==LzConfig.adminQQid){
+                    var filename = msg.drop(6).trim()
+                    var file = File(PluginMain.dataFolderPath.toString()+"/$filename")
+                    try {
+                        file.deleteRecursively()
+                        this.group.sendMessage("清空${filename}文件夹成功")
+                    } catch (e: Exception) {
+                        this.group.sendMessage("泪目,未知错误")
+                        e.printStackTrace()
+                    }
+
+                }
+                else {
+                    this.group.sendMessage(At(sender)+"没有权限")
+                }
+
+
+            }
             for(eqstr  in LzConfig.GetcommandList){
                 if(msg.startsWith(eqstr)) {
                         strname = msg.drop(eqstr.length).trim()
@@ -89,8 +110,8 @@ object PluginMain : KotlinPlugin(
     }
     private suspend fun GroupMessageEvent.Lzsave(arg: String?,sender1: Member)
     {
-        this.group.sendMessage(At(sender1)+"请发送一张图片")
-        logger.info("sender1${sender1}")
+        this.group.sendMessage(At(sender1)+"请在300ms内发送一张图片")
+
         globalEventChannel().subscribe<GroupMessageEvent>{
             if(this.sender.id == sender1.id){
                 var chain = this.message;
@@ -100,9 +121,6 @@ object PluginMain : KotlinPlugin(
                     arg?.let { it1 -> ImageUtils.saveImage(it1,image) }
                     this.group.sendMessage(chain+ PlainText("保存成功噢"));
                     return@subscribe ListeningStatus.STOPPED
-                }
-                else {
-                    this.group.sendMessage(PlainText("没有找到图片噢"));
                 }
             }
             return@subscribe ListeningStatus.LISTENING

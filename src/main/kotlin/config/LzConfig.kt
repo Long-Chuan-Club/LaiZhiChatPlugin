@@ -12,4 +12,5 @@ object LzConfig {
     val GetcommandList:List<String> = listOf("来点","来只")
     val AddcommandList:List<String> = listOf("Add","添加")
     var archiveDirectory: String = ""
+    var adminQQid:Long = 1686448912
 }

@@ -14,7 +14,7 @@ import java.util.stream.Collectors
 object AddChat :SimpleCommand(PluginMain,"添加",description = "获取某个人的图库") {
 
     @Handler
-    suspend fun CommandSenderOnMessage<*>.add(name:String){
+    suspend fun CommandSenderOnMessage<*>.clear(name:String){
         sendMessage("请发送一张图片")
         globalEventChannel().subscribeOnce<GroupMessageEvent>{
             var chain = this.message;

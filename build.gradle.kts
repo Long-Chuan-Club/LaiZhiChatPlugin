@@ -7,12 +7,13 @@ plugins {
 }
 
 group = "huvz.chat.repeater"
-version = "0.1.4"
+version = "0.1.5"
 repositories {
     mavenCentral()
     maven("https://maven.aliyun.com/repository/public") // 阿里云国内代理仓库
 }
 dependencies {
+    compileOnly("xyz.cssxsh.mirai:mirai-hibernate-plugin:2.7.1")
     implementation("io.ktor:ktor-client-okhttp:2.2.4")
 }
 mirai {

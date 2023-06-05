@@ -15,4 +15,6 @@ object LzConfig {
     var adminQQid:Long = 1686448912
     var pdImageList:List<String?> = listOf("群友","蔡姐姐")
     var ApiList:List<String?> = listOf("")
+    var MsgmessageIntervalTime = 100L;
+
 }

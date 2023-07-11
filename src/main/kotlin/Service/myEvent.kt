@@ -33,8 +33,8 @@ object myEvent : SimpleListenerHost(){
             val msg1 = msg.trim();
             if(msg1.startsWith("@${bot.id} #删除")){
                 val original = originalMessageFromLocal
-                var inmage = original.get(Image)!!;
-                if(original.get(Image) is Image){
+                var inmage = original[Image]!!;
+                if(original[Image] is Image){
                     var filename = msg.drop("@${bot.id} #删除".length)
                     PluginMain.logger.info("文件名${filename}");
                     if(ImageUtils.delImages(filename,inmage)) {
@@ -55,15 +55,16 @@ object myEvent : SimpleListenerHost(){
         if(msg.equals("#获取图库")){
             val files = File(PluginMain.dataFolder.absolutePath).listFiles()
             var cnt = 0;
+            if(files.isEmpty()) SendTask.sendMessage(group,"当前没有图库哇")
             SendTask.sendMessage(
                 group,
                 buildMessageChain {
                     At(sender.id)
-                    +"检索到的图库如下:\n"
+                    +"检索到的图库如下:"
                     for(s in files!!)
                     {
                         cnt++;
-                        +PlainText("File>${cnt}:${s.name}.size():${(s.listFiles()?.size ?: 0)}\n")
+                        +PlainText("\n《${cnt}:${s.name}》:${(s.listFiles()?.size ?: 0)}")
                     }
 
                 }
@@ -196,7 +197,7 @@ object myEvent : SimpleListenerHost(){
      */
     private suspend fun GroupMessageEvent.Lzsave(arg: String?, sender1: Member)
     {
-        SendTask.sendMessage(group, At(sender1) +"请在3000ms内发送一张图片")
+        SendTask.sendMessage(group, At(sender1) +"请在300s内发送一张图片")
         var ti1m1 = Instant.now().epochSecond
         globalEventChannel().subscribe<GroupMessageEvent>{
             if((Instant.now().epochSecond-ti1m1)>=300){

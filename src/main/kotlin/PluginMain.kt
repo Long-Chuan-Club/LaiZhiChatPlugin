@@ -18,6 +18,7 @@ import org.example.mirai.plugin.Command.AddChat
 import org.example.mirai.plugin.Service.myEvent
 import org.example.mirai.plugin.config.LzConfig
 import org.example.mirai.plugin.util.ImageUtils
+import org.example.mirai.plugin.util.SendTask
 import xyz.cssxsh.mirai.hibernate.MiraiHibernateRecorder
 import java.io.File
 import java.time.Instant
@@ -27,7 +28,7 @@ object PluginMain : KotlinPlugin(
     JvmPluginDescription(
         id = "com.come_only.mirai-come",
         name = "来只XX",
-        version = "0.1.5"
+        version = "0.1.7"
     ) {
         author("huvz")
         info(
@@ -50,7 +51,7 @@ object PluginMain : KotlinPlugin(
         //配置文件目录 "${dataFolder.absolutePath}/"
         globalEventChannel().registerListenerHost(myEvent)
         globalEventChannel().subscribeAlways<MemberLeaveEvent> {
-            println("泪目，有人离开了群。")
+            SendTask.sendMessage(group,"泪目，有人离开了群。")
         }
     }
 

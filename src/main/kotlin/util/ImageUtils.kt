@@ -25,25 +25,31 @@ import kotlin.random.Random
 class ImageUtils: Closeable {
     companion object
     {
-        fun GetImage(folderpath:String ): ExternalResource? {
-            val filepath = resolveDataFile(folderpath)
-            val images = filepath.listFiles { file -> file.extension == "jpg" || file.extension == "png" || file.extension == "gif"}
-            if (images != null) {
-                //logger.info { "已获取到图片列表${images.size}" }
-            }
-            if (images != null && images.isNotEmpty()) {
-                var  rad= Random.nextInt(0,images.size+1)%images.size;
-                logger.info("随机数为${rad}")
-                val randomImage = images[rad]
-                var res = randomImage.toExternalResource()
-                logger.info { "本地已找到${randomImage.absolutePath}" }
-                return res;
+        fun GetImage(folderpath:String,picnum:Int ): ExternalResource? {
+
+            try {
+                val filepath = resolveDataFile("LaiZhi/${folderpath}")
+                val images = filepath.listFiles { file -> file.extension == "jpg" || file.extension == "png" || file.extension == "gif"}
+                if (images != null && images.isNotEmpty()) {
+                    val rad = if(picnum!=-1){
+                        picnum-1
+                    } else {
+                        Random.nextInt(0,images.size+1)%images.size;
+                    }
+                    val randomImage = images[rad]
+                    val res = randomImage.toExternalResource()
+                    logger.info { "本地已找到${randomImage.absolutePath}" }
+                    return res;
+                }
+
+            }catch (e:Exception){
+                logger.error( "获取图片异常")
             }
             return null
         }
 
         /**
-         * copy=>@jie65535
+         *
          */
         private suspend fun saveImages(from: String, message: MessageChain) {
             val fm = message[ForwardMessage]
@@ -56,9 +62,12 @@ class ImageUtils: Closeable {
             }
         }
 
+        /**
+         * 保存图片到本地目录
+         */
         suspend fun saveImage(from: String, image: Image) {
             val url = image.queryUrl()
-            val filePath = "${from}/${image.imageId}"
+            val filePath = "LaiZhi/${from}/${image.imageId}"
             val file  = resolveDataFile(filePath)
             if (!file.exists()) {
 
@@ -66,21 +75,25 @@ class ImageUtils: Closeable {
                 val fileParent = file.parentFile
                 if (!fileParent.exists()) fileParent.mkdirs()
                 file.writeBytes(imageByte)
+
             }
         }
 
+        /**
+         * 从本地目录删除图片
+         */
         public suspend fun delImages(from: String, image: Image):Boolean {
             val url = image.queryUrl()
-            val filePath = "${from}/${image.imageId}"
+            val filePath = "LaiZhi/${from}/${image.imageId}"
             val file  = resolveDataFile(filePath)
-            if(file.exists()){
+            return if(file.exists()){
                 logger.info("${file.absolutePath}存在")
                 file.deleteRecursively()
-                if(!file.exists())return true
-                else return false;
-            }
-            else{
-                return false;
+                if(file.exists()) file.delete()
+                !file.exists();
+
+            } else{
+                false;
             }
         }
 

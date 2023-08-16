@@ -24,28 +24,28 @@ object myEvent : SimpleListenerHost(){
         // 处理 onMessage 中未捕获的异常
         PluginMain.logger.error("未知错误")
     }
-    var isKey:Boolean = true;
+    var isKey:Boolean = false;
     @EventHandler
     suspend fun GroupMessageEvent.onMessage(): ListeningStatus { // 可以抛出任何异常, 将在 handleException 处理
-        var msg = message.content;
-        var strname : String?
+        val msg = message.content;
+        val strname : String?
         message[QuoteReply.Key]?.run {
             val msg1 = msg.trim();
             if(msg1.startsWith("@${bot.id} #删除")){
                 val original = originalMessageFromLocal
-                var inmage = original[Image]!!;
+                val inmage = original[Image]!!;
                 if(original[Image] is Image){
-                    var filename = msg.drop("@${bot.id} #删除".length)
+                    val filename = msg.drop("@${bot.id} #删除".length)
                     PluginMain.logger.info("文件名${filename}");
                     if(ImageUtils.delImages(filename,inmage)) {
                         SendTask.sendMessage(sender,At(sender) +"删除成功");
                     }
                     else{
-                        group.sendMessage(At(sender) +"删除失败")
+                        SendTask.sendMessage(sender,At(sender) +"删除失败,可能是文件夹被占用")
                     }
                 }
                 else{
-                    group.sendMessage(At(sender) +"没找到图片")
+                    SendTask.sendMessage(sender,At(sender) +"没找到图片")
                 }
                 return ListeningStatus.LISTENING
             }
@@ -53,23 +53,28 @@ object myEvent : SimpleListenerHost(){
 
         }
         if(msg.equals("#获取图库")){
-            val files = File(PluginMain.dataFolder.absolutePath).listFiles()
+            val files = File(PluginMain.dataFolder.absolutePath+"/LaiZhi").listFiles()
             var cnt = 0;
-            if(files.isEmpty()) SendTask.sendMessage(group,"当前没有图库哇")
-            SendTask.sendMessage(
-                group,
-                buildMessageChain {
-                    At(sender.id)
-                    +"检索到的图库如下:"
-                    for(s in files!!)
-                    {
-                        cnt++;
-                        +PlainText("\n《${cnt}:${s.name}》:${(s.listFiles()?.size ?: 0)}")
-                    }
+            if (files == null) {
+                 SendTask.sendMessage(group,"当前没有图库哇")
+            }
+            else{
+                SendTask.sendMessage(
+                    group,
+                    buildMessageChain {
+                        At(sender.id)
+                        +"检索到的图库如下:"
+                        for(s in files) {
+                            cnt++;
+                            +PlainText("\n${s.name}:${(s.listFiles()?.size ?: 0)}")
+                        }
+                        }
 
-                }
+                    )
 
-            )
+            }
+
+
         }
         else if(msg.startsWith("#clear") && sender.id== LzConfig.adminQQid)
         {
@@ -78,7 +83,7 @@ object myEvent : SimpleListenerHost(){
             SendTask.sendMessage(group,"清理成功")
             return ListeningStatus.LISTENING
         }
-        else if(msg.equals("开关关键字") && sender.id== LzConfig.adminQQid){
+        else if(msg == "开关关键字" && sender.id== LzConfig.adminQQid){
             if(isKey){
                 isKey=false;
                 SendTask.sendMessage(group,"关键字检索=false")
@@ -126,15 +131,51 @@ object myEvent : SimpleListenerHost(){
                 var filenamelist = countFile()
                 for(eqstr  in filenamelist){
                     if(msg.contains(eqstr)) {
-                        Lzget(eqstr)
+                        getImg(eqstr,-1)
                         return ListeningStatus.LISTENING
                     }
                 }
             }
             else{
                 if(msg.startsWith("来只")){
-                    strname = msg.drop("来只".length).trim()
-                    Lzget(strname)
+                    var getnum = -1;
+                    val strlist = msg.split(" ");
+                    PluginMain.logger.info("获取到strlist数组${strlist}")
+                    if(strlist.isNotEmpty()){
+                        //没有空格分割 比如”来只夏“
+                        if(strlist[0].length>2)
+                        {
+                            PluginMain.logger.info("开始分割数组")
+                            strname = strlist[0].drop(2)
+                            PluginMain.logger.info("arg:1${strname}")
+                            if(strlist.size==2){
+                                try {
+                                    getnum = strlist[1].toInt();
+                                }
+                                catch (e:Exception){
+                                    PluginMain.logger.error("转换错误，请确认参数是否为int/Long类型")
+                                }
+                            }
+                        }
+                        //"来只 夏"
+                        else{
+                            //直接提取
+                            strname = strlist[1].trim()
+                            if(strlist.size==3){
+                                try {
+                                    getnum = strlist[2].toInt();
+                                }
+                                catch (e:Exception){
+                                    PluginMain.logger.error("转换错误，请确认参数是否为int/Long类型")
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        strname = msg.drop("来只".length).trim()
+                    }
+                    PluginMain.logger.info("接收到来只参数，参数1:${strname}，参数2:${getnum}")
+                    getImg(strname,getnum)
                 }
 
             }
@@ -156,14 +197,14 @@ object myEvent : SimpleListenerHost(){
     /**
      * 获取图片
      */
-    private suspend fun GroupMessageEvent.Lzget(arg: String?) {
+    private suspend fun GroupMessageEvent.getImg(arg: String?, arg1 : Int) {
         if (arg != null) {
-            var res = ImageUtils.GetImage(arg)
+            val res = ImageUtils.GetImage(arg,arg1)
             //如果不为空，就上传
 
             if (res != null) {
                 this.subject.let {
-                    var img = res.uploadAsImage(it)
+                    val img = res.uploadAsImage(it)
                     SendTask.sendMessage(group, img);
                 }
                 res.closed
@@ -183,7 +224,8 @@ object myEvent : SimpleListenerHost(){
             var file = File(PluginMain.dataFolderPath.toString()+"/$filename")
             try {
                 file.deleteRecursively()
-                this.group.sendMessage("清空${filename}文件夹成功")
+                if(!file.exists()) this.group.sendMessage("清空${filename}文件夹成功")
+                else{ file.delete(); this.group.sendMessage("未知错误,已经尝试使用其他方式删除啦")}
             } catch (e: Exception) {
                 this.group.sendMessage("泪目,未知错误")
                 e.printStackTrace()

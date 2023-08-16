@@ -10,6 +10,7 @@ import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MessageChain
 import org.example.mirai.plugin.PluginMain.logger
 import org.example.mirai.plugin.config.LzConfig
+import kotlin.random.Random
 
 class SendTask {
 
@@ -19,11 +20,15 @@ class SendTask {
      * 群聊回复
      */
     companion object{
-        var messageInterval = LzConfig.MsgmessageIntervalTime
+        var messageInterval = Random.nextInt(1500)+LzConfig.MsgmessageIntervalTime;
+
+
+
         public suspend fun sendMessage(event :GroupMessageEvent ,messages: List<Message>) = try {
             messages.forEach {
-                event.group.sendMessage(it)
                 delay(messageInterval)
+                event.group.sendMessage(it)
+
             }
             delay(messageInterval)
         }catch (e: Throwable) {
@@ -36,8 +41,9 @@ class SendTask {
          */
         public suspend fun sendMessage(event :CommandSender ,messages: List<Message>) = try {
             messages.forEach {
-                event.sendMessage(it)
                 delay(messageInterval)
+                event.sendMessage(it)
+
             }
             delay(messageInterval)
         }catch (e: Throwable) {
@@ -46,24 +52,27 @@ class SendTask {
         }
 
         public suspend fun sendMessage(sender: Contact, messageChain: MessageChain) = try {
-                sender.sendMessage(messageChain)
-                delay(messageInterval)
+            delay(messageInterval)
+            sender.sendMessage(messageChain)
+
         }catch (e: Throwable) {
             logger.error("发送消息失败！", e)
             delay(messageInterval)
         }
 
         public suspend fun sendMessage(sender: Contact, messageChain: String) = try {
-            sender.sendMessage(messageChain)
             delay(messageInterval)
+            sender.sendMessage(messageChain)
+
         }catch (e: Throwable) {
             logger.error("发送消息失败！", e)
             delay(messageInterval)
         }
 
         public suspend fun sendMessage(sender: Contact, img: Image)= try {
-            sender.sendMessage(img)
             delay(messageInterval)
+            sender.sendMessage(img)
+
         }catch (e: Throwable) {
             logger.error("发送消息失败！", e)
             delay(messageInterval)

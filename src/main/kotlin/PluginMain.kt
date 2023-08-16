@@ -9,6 +9,7 @@ import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.event.EventHandler
 import net.mamoe.mirai.event.ListeningStatus
 import net.mamoe.mirai.event.events.GroupMessageEvent
+import net.mamoe.mirai.event.events.MemberJoinEvent
 import net.mamoe.mirai.event.events.MemberLeaveEvent
 import net.mamoe.mirai.event.globalEventChannel
 import net.mamoe.mirai.message.data.*
@@ -26,15 +27,15 @@ import java.time.Instant
 
 object PluginMain : KotlinPlugin(
     JvmPluginDescription(
-        id = "com.come_only.mirai-come",
+        id = "com.HuChat.LaiZhi",
         name = "来只XX",
-        version = "0.1.7"
+        version = "0.1.8"
     ) {
-        author("huvz")
+        author("Huvz")
         info(
             """
             个人自用
-            来只&来点 功能 将群友话语做成梗图
+            来只&来点 功能 将群友话语做成可以出发的图
         """.trimIndent()
         )
         dependsOn("xyz.cssxsh.mirai.plugin.mirai-hibernate-plugin", false)
@@ -51,7 +52,11 @@ object PluginMain : KotlinPlugin(
         //配置文件目录 "${dataFolder.absolutePath}/"
         globalEventChannel().registerListenerHost(myEvent)
         globalEventChannel().subscribeAlways<MemberLeaveEvent> {
-            SendTask.sendMessage(group,"泪目，有人离开了群。")
+            SendTask.sendMessage(group,"(˚ ˃̣̣̥᷄⌓˂̣̣̥᷅ ) 泪目，有人离开了群。")
+        }
+        globalEventChannel().subscribeAlways<MemberJoinEvent> {
+            SendTask.sendMessage(group,At(member)+"欢迎进入本群哇！ ૮(˶ᵔ ᵕ ᵔ˶)ა")
+
         }
     }
 

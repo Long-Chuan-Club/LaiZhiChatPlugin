@@ -2,6 +2,7 @@ package org.example.mirai.plugin.util
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.ForwardMessage
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
@@ -25,10 +26,10 @@ import kotlin.random.Random
 class ImageUtils: Closeable {
     companion object
     {
-        fun GetImage(folderpath:String,picnum:Int ): ExternalResource? {
+        fun GetImage(group: Group, folderpath:String, picnum:Int ): ExternalResource? {
 
             try {
-                val filepath = resolveDataFile("LaiZhi/${folderpath}")
+                val filepath = resolveDataFile("LaiZhi/${group.id}/${folderpath}")
                 val images = filepath.listFiles { file -> file.extension == "jpg" || file.extension == "png" || file.extension == "gif"}
                 if (images != null && images.isNotEmpty()) {
                     val rad = if(picnum!=-1){
@@ -51,23 +52,23 @@ class ImageUtils: Closeable {
         /**
          *
          */
-        private suspend fun saveImages(from: String, message: MessageChain) {
-            val fm = message[ForwardMessage]
-            if (fm != null) {
-                fm.nodeList.forEach { saveImages(from, it.messageChain) }
-            } else {
-                message.filterIsInstance<Image>().forEach { img ->
-                    saveImage(from, img)
-                }
-            }
-        }
+//        private suspend fun saveImages(from: String, message: MessageChain) {
+//            val fm = message[ForwardMessage]
+//            if (fm != null) {
+//                fm.nodeList.forEach { saveImages(from, it.messageChain) }
+//            } else {
+//                message.filterIsInstance<Image>().forEach { img ->
+//                    saveImage(from, img)
+//                }
+//            }
+//        }
 
         /**
          * 保存图片到本地目录
          */
-        suspend fun saveImage(from: String, image: Image) {
+        suspend fun saveImage(group: Group,from: String, image: Image) {
             val url = image.queryUrl()
-            val filePath = "LaiZhi/${from}/${image.imageId}"
+            val filePath = "LaiZhi/${group.id}/${from}/${image.imageId}"
             val file  = resolveDataFile(filePath)
             if (!file.exists()) {
 
@@ -82,9 +83,9 @@ class ImageUtils: Closeable {
         /**
          * 从本地目录删除图片
          */
-        public suspend fun delImages(from: String, image: Image):Boolean {
+        public suspend fun delImages(group: Group,from: String, image: Image):Boolean {
             val url = image.queryUrl()
-            val filePath = "LaiZhi/${from}/${image.imageId}"
+            val filePath = "LaiZhi/${group.id}/${from}/${image.imageId}"
             val file  = resolveDataFile(filePath)
             return if(file.exists()){
                 logger.info("${file.absolutePath}存在")

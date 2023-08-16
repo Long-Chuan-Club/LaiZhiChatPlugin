@@ -1,6 +1,7 @@
 package org.example.mirai.plugin.Service
 
 import net.mamoe.mirai.console.plugin.version
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.event.EventHandler
 import net.mamoe.mirai.event.ListeningStatus
@@ -37,7 +38,7 @@ object myEvent : SimpleListenerHost(){
                 if(original[Image] is Image){
                     val filename = msg.drop("@${bot.id} #删除".length)
                     PluginMain.logger.info("文件名${filename}");
-                    if(ImageUtils.delImages(filename,inmage)) {
+                    if(ImageUtils.delImages(group,filename,inmage)) {
                         SendTask.sendMessage(sender,At(sender) +"删除成功");
                     }
                     else{
@@ -53,7 +54,7 @@ object myEvent : SimpleListenerHost(){
 
         }
         if(msg.equals("#获取图库")){
-            val files = File(PluginMain.dataFolder.absolutePath+"/LaiZhi").listFiles()
+            val files  = countFile(group)
             var cnt = 0;
             if (files == null) {
                  SendTask.sendMessage(group,"当前没有图库哇")
@@ -66,7 +67,7 @@ object myEvent : SimpleListenerHost(){
                         +"检索到的图库如下:"
                         for(s in files) {
                             cnt++;
-                            +PlainText("\n${s.name}:${(s.listFiles()?.size ?: 0)}")
+                            +PlainText("[$s], ")
                         }
                         }
 
@@ -128,7 +129,7 @@ object myEvent : SimpleListenerHost(){
         }
         else{
             if(isKey){
-                var filenamelist = countFile()
+                var filenamelist = countFile(group)
                 for(eqstr  in filenamelist){
                     if(msg.contains(eqstr)) {
                         getImg(eqstr,-1)
@@ -185,9 +186,10 @@ object myEvent : SimpleListenerHost(){
         return ListeningStatus.LISTENING // 表示继续监听事件
         // return ListeningStatus.STOPPED // 表示停止监听事件
     }
-    private  fun countFile(): List<String> {
-        var filenamelist = mutableListOf<String>();
-        var filelist= File(PluginMain.dataFolder.absolutePath).listFiles();
+    private  fun countFile(group: Group): List<String> {
+        val filenamelist = mutableListOf<String>();
+        val fileURl =  PluginMain.dataFolder.absolutePath+"/LaiZhi/${group.id}";
+        val filelist= File(fileURl).listFiles();
         for(f in filelist!!){
             filenamelist.add(f.name)
         }
@@ -199,7 +201,7 @@ object myEvent : SimpleListenerHost(){
      */
     private suspend fun GroupMessageEvent.getImg(arg: String?, arg1 : Int) {
         if (arg != null) {
-            val res = ImageUtils.GetImage(arg,arg1)
+            val res = ImageUtils.GetImage(group,arg,arg1)
             //如果不为空，就上传
 
             if (res != null) {
@@ -252,7 +254,7 @@ object myEvent : SimpleListenerHost(){
 
                 if(image!=null) {
 
-                    arg?.let { it1 -> ImageUtils.saveImage(it1,image) }
+                    arg?.let { it1 -> ImageUtils.saveImage(group,it1,image) }
                     SendTask.sendMessage(group, chain+ PlainText("保存成功噢"));
                     return@subscribe ListeningStatus.STOPPED
                 }

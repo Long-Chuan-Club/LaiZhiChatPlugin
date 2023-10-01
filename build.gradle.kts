@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "huvz.chat.repeater"
-version = "0.1.8.1"
+version = "0.2.0"
 repositories {
     mavenCentral()
     maven("https://maven.aliyun.com/repository/public") // 阿里云国内代理仓库

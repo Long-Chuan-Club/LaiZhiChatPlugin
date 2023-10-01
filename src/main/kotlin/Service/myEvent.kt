@@ -56,24 +56,18 @@ object myEvent : SimpleListenerHost(){
         if(msg.equals("#获取图库")){
             val files  = countFile(group)
             var cnt = 0;
-            if (files == null) {
-                 SendTask.sendMessage(group,"当前没有图库哇")
-            }
-            else{
-                SendTask.sendMessage(
-                    group,
-                    buildMessageChain {
-                        At(sender.id)
-                        +"检索到的图库如下:"
-                        for(s in files) {
-                            cnt++;
-                            +PlainText("[$s], ")
-                        }
-                        }
+            SendTask.sendMessage(
+                group,
+                buildMessageChain {
+                    At(sender.id)
+                    +"检索到的图库如下:"
+                    for(s in files) {
+                        cnt++;
+                        +PlainText("[$s], ")
+                    }
+                    }
 
-                    )
-
-            }
+                )
 
 
         }
@@ -223,7 +217,7 @@ object myEvent : SimpleListenerHost(){
         if(  filename  in LzConfig.pdImageList)
             this.group.sendMessage(At(sender) +"这是受保护的图库，你无法删除噢(请联系管理员)")
         else {
-            var file = File(PluginMain.dataFolderPath.toString()+"/$filename")
+            var file = File(PluginMain.dataFolderPath.toString()+"/LaiZhi/${this.group.id}/$filename")
             try {
                 file.deleteRecursively()
                 if(!file.exists()) this.group.sendMessage("清空${filename}文件夹成功")

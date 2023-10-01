@@ -76,7 +76,6 @@ class ImageUtils: Closeable {
                 val fileParent = file.parentFile
                 if (!fileParent.exists()) fileParent.mkdirs()
                 file.writeBytes(imageByte)
-
             }
         }
 
@@ -87,15 +86,16 @@ class ImageUtils: Closeable {
             val url = image.queryUrl()
             val filePath = "LaiZhi/${group.id}/${from}/${image.imageId}"
             val file  = resolveDataFile(filePath)
-            return if(file.exists()){
-                logger.info("${file.absolutePath}存在")
+
+            logger.info("${file.absolutePath}存在")
+            if(file.exists()){
+
                 file.deleteRecursively()
                 if(file.exists()) file.delete()
-                !file.exists();
-
-            } else{
-                false;
             }
+                return !file.exists();
+
+
         }
 
     }

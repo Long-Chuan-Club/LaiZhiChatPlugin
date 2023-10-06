@@ -1,4 +1,4 @@
-# [「来只」插件](https://github.com/cssxsh/pixiv-helper)
+# [「来只」插件](https://github.com/Long-Chuan-Club/LaiZhiChatPlugin)
 
 > 基于 Mirai QQ机器人的发图插件
 

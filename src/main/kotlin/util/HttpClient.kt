@@ -1,9 +1,8 @@
-package org.example.mirai.plugin.util
+package org.longchuanclub.mirai.plugin.util
 
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.net.URL
 import java.util.concurrent.TimeUnit
 
 class HttpClient {

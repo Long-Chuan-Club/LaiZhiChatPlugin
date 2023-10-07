@@ -8,4 +8,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "huvz-chat-repeater"
+rootProject.name = "LaiZhi.Chat.Repeater"

@@ -1,9 +1,8 @@
-package org.example.mirai.plugin.util
+package org.longchuanclub.mirai.plugin.util
 
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
-import org.example.mirai.plugin.entity.outImg
-import java.awt.BasicStroke
+import org.longchuanclub.mirai.plugin.entity.outImg
 import java.awt.Color
 import java.awt.Font
 import java.awt.RenderingHints

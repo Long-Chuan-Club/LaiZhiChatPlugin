@@ -1,8 +1,4 @@
-package org.example.mirai.plugin.config
-
-import net.mamoe.mirai.console.data.AutoSavePluginConfig
-import net.mamoe.mirai.console.data.ValueDescription
-import net.mamoe.mirai.console.data.value
+package org.longchuanclub.mirai.plugin.config
 
 object LzConfig {
     /**

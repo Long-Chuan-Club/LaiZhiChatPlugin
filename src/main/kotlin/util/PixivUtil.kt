@@ -1,6 +1,6 @@
-package org.example.mirai.plugin.util
+package org.longchuanclub.mirai.plugin.util
 
-import org.example.mirai.plugin.config.LzConfig
+import org.longchuanclub.mirai.plugin.config.LzConfig
 
 class PixivUtil {
     public fun getSetu(){

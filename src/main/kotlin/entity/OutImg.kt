@@ -1,4 +1,4 @@
-package org.example.mirai.plugin.entity
+package org.longchuanclub.mirai.plugin.entity
 
 import java.io.File
 

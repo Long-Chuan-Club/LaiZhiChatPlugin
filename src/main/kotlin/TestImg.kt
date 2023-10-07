@@ -1,7 +1,7 @@
-package org.example.mirai.plugin
+package org.longchuanclub.mirai.plugin
 
-import org.example.mirai.plugin.entity.outImg
-import org.example.mirai.plugin.util.graphicsUtil
+import org.longchuanclub.mirai.plugin.entity.outImg
+import org.longchuanclub.mirai.plugin.util.graphicsUtil
 import java.io.File
 
 fun main() {

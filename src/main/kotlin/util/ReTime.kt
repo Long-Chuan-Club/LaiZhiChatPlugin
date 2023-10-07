@@ -1,4 +1,4 @@
-package org.example.mirai.plugin.util
+package org.longchuanclub.mirai.plugin.util
 
 import java.time.LocalDateTime
 import java.time.LocalTime

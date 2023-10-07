@@ -1,13 +1,12 @@
-package org.example.mirai.plugin.Command
+package org.longchuanclub.mirai.plugin.Command
 
 
 import net.mamoe.mirai.console.command.CommandSender
 import net.mamoe.mirai.console.command.SimpleCommand
-import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
-import org.example.mirai.plugin.PluginMain
-import org.example.mirai.plugin.entity.outImg
-import org.example.mirai.plugin.util.graphicsUtil
+import org.longchuanclub.mirai.plugin.PluginMain
+import org.longchuanclub.mirai.plugin.entity.outImg
+import org.longchuanclub.mirai.plugin.util.graphicsUtil
 import java.io.File
 
 object getImgList :SimpleCommand(PluginMain,"获取图库",description = "获取全部的图库列表") {

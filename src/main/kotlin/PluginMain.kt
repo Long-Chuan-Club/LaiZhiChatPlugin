@@ -1,4 +1,4 @@
-package org.example.mirai.plugin
+package org.longchuanclub.mirai.plugin
 
 import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
@@ -8,15 +8,15 @@ import net.mamoe.mirai.event.events.MemberLeaveEvent
 import net.mamoe.mirai.event.globalEventChannel
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.info
-import org.example.mirai.plugin.Command.getImgList
-import org.example.mirai.plugin.Service.myEvent
-import org.example.mirai.plugin.util.SendTask
+import org.longchuanclub.mirai.plugin.Command.getImgList
+import org.longchuanclub.mirai.plugin.Service.myEvent
+import org.longchuanclub.mirai.plugin.util.SendTask
 import xyz.cssxsh.mirai.hibernate.MiraiHibernateRecorder
 
 
 object PluginMain : KotlinPlugin(
     JvmPluginDescription(
-        id = "com.HuChat.LaiZhi",
+        id = "com.long_chuan_club.LaiZhi",
         name = "来只XX",
         version = "0.2.0"
     ) {

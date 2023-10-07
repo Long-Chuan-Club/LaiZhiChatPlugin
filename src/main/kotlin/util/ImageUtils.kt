@@ -1,26 +1,14 @@
-package org.example.mirai.plugin.util
+package org.longchuanclub.mirai.plugin.util
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.message.data.ForwardMessage
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
-import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.info
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import org.example.mirai.plugin.PluginMain
-import org.example.mirai.plugin.PluginMain.logger
-import org.example.mirai.plugin.PluginMain.resolveDataFile
-import org.example.mirai.plugin.config.LzConfig
+import org.longchuanclub.mirai.plugin.PluginMain.logger
+import org.longchuanclub.mirai.plugin.PluginMain.resolveDataFile
 import java.io.Closeable
-import java.io.File
-import java.net.URL
-import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 class ImageUtils: Closeable {

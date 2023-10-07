@@ -1,4 +1,4 @@
-package org.example.mirai.plugin.Service
+package org.longchuanclub.mirai.plugin.Service
 
 import net.mamoe.mirai.console.plugin.version
 import net.mamoe.mirai.contact.Group
@@ -10,11 +10,11 @@ import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.event.globalEventChannel
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
-import org.example.mirai.plugin.PluginMain
-import org.example.mirai.plugin.PluginMain.originalMessageFromLocal
-import org.example.mirai.plugin.config.LzConfig
-import org.example.mirai.plugin.util.ImageUtils
-import org.example.mirai.plugin.util.SendTask
+import org.longchuanclub.mirai.plugin.PluginMain
+import org.longchuanclub.mirai.plugin.PluginMain.originalMessageFromLocal
+import org.longchuanclub.mirai.plugin.config.LzConfig
+import org.longchuanclub.mirai.plugin.util.ImageUtils
+import org.longchuanclub.mirai.plugin.util.SendTask
 import java.io.File
 import java.time.Instant
 import kotlin.coroutines.CoroutineContext

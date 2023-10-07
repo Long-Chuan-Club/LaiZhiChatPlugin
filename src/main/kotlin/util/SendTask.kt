@@ -1,15 +1,14 @@
-package org.example.mirai.plugin.util
+package org.longchuanclub.mirai.plugin.util
 
 import kotlinx.coroutines.delay
 import net.mamoe.mirai.console.command.CommandSender
 import net.mamoe.mirai.contact.Contact
-import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MessageChain
-import org.example.mirai.plugin.PluginMain.logger
-import org.example.mirai.plugin.config.LzConfig
+import org.longchuanclub.mirai.plugin.PluginMain.logger
+import org.longchuanclub.mirai.plugin.config.LzConfig
 import kotlin.random.Random
 
 class SendTask {

@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "LaiZhi.Chat.Repeater"
-version = "0.2.0"
+version = "0.2.1"
 repositories {
     mavenCentral()
     maven("https://maven.aliyun.com/repository/public") // 阿里云国内代理仓库
@@ -17,5 +17,5 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:2.2.4")
 }
 mirai {
-    jvmTarget = JavaVersion.VERSION_11
+    jvmTarget = JavaVersion.VERSION_17
 }

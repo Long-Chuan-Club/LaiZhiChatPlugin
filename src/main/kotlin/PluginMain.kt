@@ -18,7 +18,7 @@ object PluginMain : KotlinPlugin(
     JvmPluginDescription(
         id = "com.long_chuan_club.LaiZhi",
         name = "来只XX",
-        version = "0.2.0"
+        version = "0.2.1"
     ) {
         author("Huvz")
         info(

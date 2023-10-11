@@ -25,9 +25,10 @@ class ImageUtils: Closeable {
                     } else {
                         Random.nextInt(0,images.size+1)%images.size;
                     }
+
                     val randomImage = images[rad]
-                    val res = randomImage.toExternalResource()
                     logger.info { "本地已找到${randomImage.absolutePath}" }
+                    val res = randomImage.toExternalResource().toAutoCloseable()
                     return res;
                 }
 
@@ -37,19 +38,7 @@ class ImageUtils: Closeable {
             return null
         }
 
-        /**
-         *
-         */
-//        private suspend fun saveImages(from: String, message: MessageChain) {
-//            val fm = message[ForwardMessage]
-//            if (fm != null) {
-//                fm.nodeList.forEach { saveImages(from, it.messageChain) }
-//            } else {
-//                message.filterIsInstance<Image>().forEach { img ->
-//                    saveImage(from, img)
-//                }
-//            }
-//        }
+
 
         /**
          * 保存图片到本地目录
@@ -86,10 +75,11 @@ class ImageUtils: Closeable {
 
         }
 
-    }
 
+    }
     override fun close() {
         this.close()
     }
+
 
 }

@@ -10,7 +10,9 @@ import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.event.globalEventChannel
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
+import net.mamoe.mirai.utils.info
 import org.longchuanclub.mirai.plugin.PluginMain
+import org.longchuanclub.mirai.plugin.PluginMain.logger
 import org.longchuanclub.mirai.plugin.PluginMain.originalMessageFromLocal
 import org.longchuanclub.mirai.plugin.config.LzConfig
 import org.longchuanclub.mirai.plugin.util.ImageUtils
@@ -201,12 +203,15 @@ object myEvent : SimpleListenerHost(){
             if (res != null) {
                 this.subject.let {
                     val img = res.uploadAsImage(it)
+                    res.closed
+                    if(res.isAutoClose) PluginMain.logger.info { "已经关闭了流" }
                     SendTask.sendMessage(group, img);
+
                 }
-                res.closed
             } else {
                 SendTask.sendMessage(group, "目录下找不到图片噢")
             }
+
         }
     }
 

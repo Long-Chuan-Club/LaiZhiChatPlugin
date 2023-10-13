@@ -1,16 +1,35 @@
 package org.longchuanclub.mirai.plugin.config
 
-object LzConfig {
+
+import net.mamoe.mirai.console.data.*
+
+
+@PublishedApi
+internal object LzConfig : AutoSavePluginConfig("LaiZhiConfig"){
     /**
      * 指令列表
      * 默认为"[来点]","[来只]"
      */
-    //val GetcommandList:List<String> = listOf("来点","来只")
-    val AddcommandList:List<String> = listOf("add","添加")
-    var archiveDirectory: String = ""
-    var adminQQid:Long = 1686448912
-    var pdImageList:List<String?> = listOf("群友","蔡姐姐")
-    var ApiList:List<String?> = listOf("")
-    var MsgmessageIntervalTime = 500L;
+
+    @ValueDescription("触发-添加图库-指令")
+    val AddcommandList:List<String> by value(listOf("add","添加"))
+    @ValueDescription("存储目录 *不可用")
+    var archiveDirectory: String by value()
+    @ValueDescription("管理员QQ")
+    var adminQQid:Long by value()
+
+    @ValueDescription("受保护的图库")
+    var ProtectImageList:List<String?> by value()
+
+    @ValueDescription("消息发送延迟")
+    var messageIntervalTime :Long by value(500L);
+
+    @ValueDescription("黑名单")
+    var Blacklist:List<Long> by value()
+
+    @ValueDescription("获取图库指令列表")
+    var Graphicslist:List<String> by value(listOf("#获取图库","#图库","本群图库"))
+
+
 
 }

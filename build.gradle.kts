@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "LaiZhi.Chat.Repeater"
-version = "0.2.1"
+version = "0.2.2"
 repositories {
     mavenCentral()
     maven("https://maven.aliyun.com/repository/public") // 阿里云国内代理仓库

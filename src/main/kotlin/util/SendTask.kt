@@ -19,7 +19,7 @@ class SendTask {
      * 群聊回复
      */
     companion object{
-        var messageInterval = Random.nextInt(1500)+LzConfig.MsgmessageIntervalTime;
+        var messageInterval = Random.nextInt(1500)+LzConfig.messageIntervalTime;
 
 
 

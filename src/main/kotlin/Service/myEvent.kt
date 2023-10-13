@@ -41,21 +41,21 @@ object myEvent : SimpleListenerHost(){
                     val filename = msg.drop("@${bot.id} #删除".length)
                     PluginMain.logger.info("文件名${filename}");
                     if(ImageUtils.delImages(group,filename,inmage)) {
-                        SendTask.sendMessage(sender,At(sender) +"删除成功");
+                        SendTask.sendMessage(group,At(sender) +"删除成功");
                     }
                     else{
-                        SendTask.sendMessage(sender,At(sender) +"删除失败,可能是文件夹被占用")
+                        SendTask.sendMessage(group,At(sender) +"删除失败,可能是文件夹被占用")
                     }
                 }
                 else{
-                    SendTask.sendMessage(sender,At(sender) +"没找到图片")
+                    SendTask.sendMessage(group,At(sender) +"没找到图片")
                 }
                 return ListeningStatus.LISTENING
             }
 
 
         }
-        if(msg.equals("#获取图库")){
+        if(LzConfig.Graphicslist.contains(msg)){
             val files  = countFile(group)
             var cnt = 0;
             SendTask.sendMessage(
@@ -83,10 +83,10 @@ object myEvent : SimpleListenerHost(){
         else if(msg == "开关关键字" && sender.id== LzConfig.adminQQid){
             if(isKey){
                 isKey=false;
-                SendTask.sendMessage(group,"关键字检索=false")
+                SendTask.sendMessage(group,"哼哼，接下来你只能使用\"来只\"获取啦")
             }else {
                 isKey=true;
-                SendTask.sendMessage(group,"关键字检索=true")
+                SendTask.sendMessage(group,"已经打开关键字检索辣")
             }
         }
         /**
@@ -219,7 +219,7 @@ object myEvent : SimpleListenerHost(){
      * 清理图库
      */
     private suspend fun GroupMessageEvent.clear(filename: String){
-        if(  filename  in LzConfig.pdImageList)
+        if(  filename  in LzConfig.ProtectImageList)
             this.group.sendMessage(At(sender) +"这是受保护的图库，你无法删除噢(请联系管理员)")
         else {
             var file = File(PluginMain.dataFolderPath.toString()+"/LaiZhi/${this.group.id}/$filename")

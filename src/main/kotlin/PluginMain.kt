@@ -19,7 +19,7 @@ import xyz.cssxsh.mirai.hibernate.MiraiHibernateRecorder
 
 object PluginMain : KotlinPlugin(
     JvmPluginDescription(
-        id = "com.long_chuan_club.LaiZhi",
+        id = "io.huvz.laizhi",
         name = "来只XX",
         version = "0.2.2"
     ) {
@@ -39,10 +39,8 @@ object PluginMain : KotlinPlugin(
         get() = MiraiHibernateRecorder[source].firstOrNull()?.toMessageChain() ?: source.originalMessage
 
     override fun onEnable() {
-        logger.info { "Plugin loaded" }
-         //CommandManager.registerCommand(AddChat) // 注册指令
-        //配置文件目录 "${dataFolder.absolutePath}/"
-        //globalEventChannel().registeredCommands
+
+        LzConfig.reload()
         CommandManager.registerCommand(getImgList)
         globalEventChannel().registerListenerHost(myEvent)
         globalEventChannel().subscribeAlways<MemberLeaveEvent> {
@@ -56,6 +54,7 @@ object PluginMain : KotlinPlugin(
             //自动同意加群申请 如果不在黑名单里
           if(!LzConfig.Blacklist.contains(this.fromId)) accept()
         }
+        logger.info { "Plugin loaded" }
     }
 
 

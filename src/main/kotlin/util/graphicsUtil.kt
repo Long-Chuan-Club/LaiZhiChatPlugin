@@ -63,7 +63,7 @@ class graphicsUtil {
             val file = fileList[i]
             val row = i / imagesPerRow
             val col = i % imagesPerRow
-
+            if(file.Img==null) continue;
             // 计算图片在目标矩形中的缩放大小
             val sourceImage = ImageIO.read(file.Img)
             val scaleFactor = calculateScaleFactor(sourceImage.width, sourceImage.height, targetWidth, targetHeight)

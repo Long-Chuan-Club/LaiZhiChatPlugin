@@ -2,7 +2,7 @@ package org.longchuanclub.mirai.plugin.entity
 
 import java.io.File
 
-data class outImg(
+data class ImageData(
     val ckname:String,
     var Img: File?,
     var size:Int

@@ -93,26 +93,6 @@ object myEvent : SimpleListenerHost(){
          *  匹配添加指令
          */
 
-        else if(msg.equals("#help")){
-            this.group.sendMessage(
-                At(sender.id) +
-                    buildMessageChain {
-                        +"\n本群包括但不限于以下指令列表\n"
-                        +
-                        "1.获取xx图库"
-                        +"\n检索关键字：${isKey}"
-                        +"\n2.创建图库"
-                        for(eqstr  in LzConfig.AddcommandList){
-                            +"\n        *[${eqstr}]"
-                        }
-                        +"\n3.清空图库*[#clear]"
-                        +"\n4.获取列表*[#获取图库]"
-                        +"\nbot版本:${PluginMain.version}"
-                    }
-
-            )
-
-        }
 
         /**
          * 根据关键字匹配
@@ -180,7 +160,6 @@ object myEvent : SimpleListenerHost(){
         }
 
         return ListeningStatus.LISTENING // 表示继续监听事件
-        // return ListeningStatus.STOPPED // 表示停止监听事件
     }
     private  fun countFile(group: Group): List<String> {
         val filenamelist = mutableListOf<String>();
@@ -225,8 +204,6 @@ object myEvent : SimpleListenerHost(){
             var file = File(PluginMain.dataFolderPath.toString()+"/LaiZhi/${this.group.id}/$filename")
             try {
                 file.deleteRecursively()
-                if(!file.exists()) this.group.sendMessage("清空${filename}文件夹成功")
-                else{ file.delete(); this.group.sendMessage("未知错误,已经尝试使用其他方式删除啦")}
             } catch (e: Exception) {
                 this.group.sendMessage("泪目,未知错误")
                 e.printStackTrace()
@@ -236,7 +213,7 @@ object myEvent : SimpleListenerHost(){
     }
 
     /**
-     * 删除图库
+     * 保存图库
      */
     private suspend fun GroupMessageEvent.Lzsave(arg: String?, sender1: Member)
     {

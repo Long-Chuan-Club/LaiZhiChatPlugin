@@ -17,7 +17,7 @@ class ImageUtils: Closeable {
         fun GetImage(group: Group, folderpath:String, picnum:Int ): ExternalResource? {
 
             try {
-                val filepath = resolveDataFile("LaiZhi/${group.id}/${folderpath}")
+                val filepath = resolveDataFile("LaiZhi\\${group.id}\\${folderpath}")
                 val images = filepath.listFiles { file -> file.extension == "jpg" || file.extension == "png" || file.extension == "gif"}
                 if (images != null && images.isNotEmpty()) {
                     val rad = if(picnum!=-1){
@@ -45,7 +45,7 @@ class ImageUtils: Closeable {
          */
         suspend fun saveImage(group: Group,from: String, image: Image) {
             val url = image.queryUrl()
-            val filePath = "LaiZhi/${group.id}/${from}/${image.imageId}"
+            val filePath = "LaiZhi\\${group.id}\\${from}\\${image.imageId}"
             val file  = resolveDataFile(filePath)
             if (!file.exists()) {
 
@@ -61,10 +61,8 @@ class ImageUtils: Closeable {
          */
         public suspend fun delImages(group: Group,from: String, image: Image):Boolean {
             val url = image.queryUrl()
-            val filePath = "LaiZhi/${group.id}/${from}/${image.imageId}"
+            val filePath = "LaiZhi/${group.id}\\${from}\\${image.imageId}"
             val file  = resolveDataFile(filePath)
-
-            logger.info("${file.absolutePath}存在")
             if(file.exists()){
 
                 file.deleteRecursively()

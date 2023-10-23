@@ -3,9 +3,11 @@ package org.longchuanclub.mirai.plugin.Command
 
 import net.mamoe.mirai.console.command.CommandSender
 import net.mamoe.mirai.console.command.SimpleCommand
+import net.mamoe.mirai.contact.Contact.Companion.sendImage
+import net.mamoe.mirai.utils.ExternalResource.Companion.sendAsImageTo
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import org.longchuanclub.mirai.plugin.PluginMain
-import org.longchuanclub.mirai.plugin.entity.outImg
+import org.longchuanclub.mirai.plugin.entity.ImageData
 import org.longchuanclub.mirai.plugin.util.graphicsUtil
 import java.io.File
 
@@ -16,29 +18,37 @@ object getImgList :SimpleCommand(PluginMain,"获取图库",description = "获取
         val files = File(PluginMain.dataFolder.absolutePath+"\\LaiZhi\\${sender.subject?.id}")
         var cnt = 0;
         val images = files.listFiles()
-        var simgs =  mutableListOf<outImg>()
+        val simgs =  mutableListOf<ImageData>()
         images?.forEach {
             run {
-                var o1 = outImg(it.name, null, 0);
-                var img1 = File(files.absolutePath + "\\${it.name}").listFiles{file -> file.extension == "jpg" || file.extension == "png" || file.extension == "gif"}
+                var o1 = ImageData(it.name, null, 0);
+                var img1 = File(files.absolutePath + "\\${it.name}").listFiles{file -> file.extension == "jpg" || file.extension == "png" || file.extension == "gif"|| file.extension == "jpeg"}
                 if (img1 != null) {
                     if(img1.isNotEmpty()) {
                         o1.Img  = img1.get(0)
                         o1.size = img1.size
                     }
                 }
-                if(o1.Img!=null && o1.size!=0)simgs.add(o1)
+                if(o1.Img!=null && o1.size>0)simgs.add(o1)
             }
         }
 
-        val res = graphicsUtil.darw(simgs);
-        if(res!=null){
-            val img = sender.subject?.let { res.uploadAsImage(it) }
-            img?.let {
-                sender.sendMessage(it) }
-            } else {
-            sender.sendMessage("图片生成错误，发送失败")
-        }
+
+            try {
+                val res = graphicsUtil.draw(simgs);
+                sender.subject?.let {
+                    res.uploadAsImage(it)
+                    sender.subject!!.sendImage(res)
+                }
+            }catch (e:Exception)
+            {
+                sender.subject?.sendMessage("图片发送失败呜呜\n异常:${e.message}")
+            }
+
+
+
+
+
     }
 
 

@@ -2,113 +2,171 @@ package org.longchuanclub.mirai.plugin.util
 
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
-import org.longchuanclub.mirai.plugin.entity.outImg
-import java.awt.Color
-import java.awt.Font
-import java.awt.RenderingHints
-import java.awt.image.BufferedImage
+import org.jetbrains.skia.*
+import org.longchuanclub.mirai.plugin.entity.ImageData
 import java.io.File
-import javax.imageio.ImageIO
+import java.io.FileOutputStream
+import org.jetbrains.skia.EncodedImageFormat
+import java.awt.SystemColor.text
 
 class graphicsUtil {
 
 
     companion object{
-        private val titlefont = Font
-            .createFont(Font.TRUETYPE_FONT, this::class.java.getResourceAsStream("/chinese_font.ttf"))
-    fun darw(fileList: MutableList<outImg>) : ExternalResource?{
-        val targetWidth = 185 // 目标宽度
-        val targetHeight = 185 // 目标高度
-        val imagesPerRow = 4 // 每行图片数量
-        val verticalSpacing = 50 // 垂直间距
-        val picpadding = 20; //图片间距
-        val titleHeight =120; //标题高度
-
-        val numRows = (fileList.size + imagesPerRow - 1) / imagesPerRow
-        val outputWidth = imagesPerRow * (targetWidth+picpadding)+picpadding
-        val outputHeight = numRows * (targetHeight+picpadding) + (numRows - 1) * verticalSpacing+picpadding+titleHeight
-
-        val outputImage = BufferedImage(outputWidth, outputHeight, BufferedImage.TYPE_INT_RGB)
-        val graphics = outputImage.createGraphics()
-
-        // 设置背景颜色
-        graphics.color = Color.decode("#e4e6eb")
-        graphics.fillRect(0, 0, outputWidth, outputHeight)
-
-        // 设置抗锯齿
-        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-
-        // 设置字体
-        //graphics.font = Font("宋体", Font.BOLD, 40)
-        var sizedFont = titlefont.deriveFont(60f)
-        graphics.font = sizedFont
-        graphics.color = Color.BLACK
-
-        // 计算标题的位置
-        val title = "图库列表"
-        val titleWidth = graphics.fontMetrics.stringWidth(title)
-        val titleX = (outputWidth- titleWidth) / 2
-        val titleY = titleHeight/2 + titlefont.size
-        // 绘制标题
-        graphics.drawString(title, titleX, titleY)
-        sizedFont = titlefont.deriveFont(22f)
-        //graphics.font = Font("宋体", Font.BOLD, 22)
-        graphics.font = sizedFont;
-        // 计算起始绘制的位置
-        var x = 0
-        var y = titleHeight
-        for (i in fileList.indices) {
-            // 设置背景颜色
-            graphics.color = Color.decode("#e4e6eb")
-            val file = fileList[i]
-            val row = i / imagesPerRow
-            val col = i % imagesPerRow
-            if(file.Img==null) continue;
-            // 计算图片在目标矩形中的缩放大小
-            val sourceImage = ImageIO.read(file.Img)
-            val scaleFactor = calculateScaleFactor(sourceImage.width, sourceImage.height, targetWidth, targetHeight)
-            val scaledWidth = (sourceImage.width * scaleFactor).toInt()
-            val scaledHeight = (sourceImage.height * scaleFactor).toInt()
-             x = picpadding + col *( targetWidth +picpadding)
-
-            y = titleHeight+(row * targetHeight + row * verticalSpacing)
-
-            var x1 = x +  targetWidth
-            var y1 = y + targetHeight
-            graphics.color = Color.WHITE
-            graphics.fillRect(x,y,targetWidth,targetHeight)
-            // 绘制缩放后的图片
-            graphics.drawImage(
-                sourceImage.getScaledInstance(scaledWidth, scaledHeight, BufferedImage.SCALE_SMOOTH),
-                x, y, null
-            )
-            graphics.color = Color.BLACK
-            // 绘制文件名
-            val fileName = file.ckname
-            val fileNameWidth = graphics.fontMetrics.stringWidth(fileName)
-            val fileNameX = x + (targetWidth - fileNameWidth) / 2
-            val fileNameY = y + targetHeight + 35
 
 
-            // 调整文字的垂直位置
-            graphics.drawString("${fileName}:${file.size}", fileNameX, fileNameY)
+        private const val numImagesPerRow = 4
+        private const val imageWidth = 185f
+        private const val imageHeight = 185f
+        private const val imageSpacing = 20f
+        private const val imageTextHeight = 35f
+        private const val cornerRadius = 10f
+        private const val titleHeight = 120f
 
+        //fun draw(fileList: MutableList<ImageData>): ExternalResource? {
+        //下方为本地测试用的
+        fun draw(fileList: MutableList<ImageData>): File {
+            val title = "你群图库列表"
+
+
+            val numRows = (fileList.size + numImagesPerRow - 1) / numImagesPerRow
+            val outputWidth = numImagesPerRow * (imageWidth + imageSpacing) + imageSpacing
+            val outputHeight = numRows * (imageHeight + imageSpacing + imageTextHeight + 10) + imageSpacing + titleHeight;
+
+            val surface = Surface.makeRasterN32Premul(outputWidth.toInt(), outputHeight.toInt())
+            val canvas = surface.canvas
+
+            // 设置背景颜色 #F0F8FF 爱丽丝蓝
+            canvas.clear(Color.makeRGB(240,248,255))
+
+            // 绘制标题
+            val titleFont = Font(Typeface.makeFromName("微软雅黑",FontStyle.BOLD), 60f)
+            val titlePaint = Paint().apply {
+                color = Color.BLACK
+            }
+            val titleWidth = titleFont.measureText(title)
+            val titleX = (outputWidth - titleWidth.width) / 2;
+            val titleY = titleHeight / 2
+            canvas.drawString(title, titleX, titleY,titleFont, titlePaint)
+            val paint = Paint().apply {
+                strokeWidth = strokeWidth
+                color = Color.BLACK
+            }
+
+            canvas.drawLine(30f, titleHeight-20, outputWidth-30f, titleHeight-20, paint)
+
+
+
+            // 绘制图片预览
+            val imagePaint = Paint().apply {
+                isAntiAlias = true
+            }
+
+            for (i in fileList.indices) {
+                val file = fileList[i]
+                val row = i / numImagesPerRow
+                val col = i % numImagesPerRow
+
+                val x = imageSpacing + col * (imageWidth + imageSpacing)
+                //10是预留的多余空间
+                val y = titleHeight + imageSpacing + row * (imageHeight + imageSpacing + imageTextHeight + 10)
+
+                // 绘制圆角矩形背景
+                val roundRect = RRect.makeXYWH(
+                    x, y, imageWidth, imageHeight+imageTextHeight,
+                    cornerRadius
+                )
+                val backgroundPaint = Paint().apply {
+                    //淡蓝
+                    color = Color.makeRGB(173,216,230)
+                }
+
+                canvas.drawRRect(roundRect, backgroundPaint)
+                // 绘制图片名称
+                val textFont = Font(Typeface.makeFromName("微软雅黑",FontStyle.BOLD), 18f)
+
+                val textPaint = Paint().apply {
+                    color = Color.BLACK
+                }
+
+
+                val textX = x + (imageWidth - textFont.measureText(file.ckname).width) / 2
+                val textY = y + (imageHeight- textFont.measureText(file.ckname).height) + 35f
+                canvas.drawString(file.ckname, textX, textY,textFont, textPaint)
+
+
+
+
+                try {
+                    // 绘制图片
+                    val fileData = file.Img?.readBytes()
+                    val image = fileData?.let { Image.makeFromEncoded(it) }
+                    image?.let {
+                        // 计算图像的宽高比
+                        val imageAspectRatio = image.width.toFloat() / image.height.toFloat()
+
+                        // 计算目标框的宽高比
+                        val targetAspectRatio = 185f / 185f
+
+                        // 计算缩放比例
+                        val scale = if (imageAspectRatio > targetAspectRatio) {
+                            // 图像宽度超出目标框的宽度，按照目标框的宽度进行缩放
+                            185f / image.width.toFloat()
+                        } else {
+                            // 图像高度超出目标框的高度，按照目标框的高度进行缩放
+                            185f / image.height.toFloat()
+                        }
+
+                        // 计算缩放后的图像尺寸
+                        val scaledWidth = (image.width.toFloat() * scale).toInt()
+                        val scaledHeight = (image.height.toFloat() * scale).toInt()
+
+                        // 计算绘制图像的起始坐标
+                        val drawX = x + (imageWidth - scaledWidth) / 2
+                        val drawY = y + (imageHeight - scaledHeight) / 2
+
+                        // 绘制图像
+                        canvas.drawImageRect(it, Rect.makeXYWH(drawX, drawY, scaledWidth.toFloat(), scaledHeight.toFloat()
+                        ), imagePaint)
+                    }
+                } catch (e: Exception) {
+                    canvas.drawString("渲染失败！", x + (imageWidth / 2), y + (imageHeight - 10) / 2, textFont, textPaint)
+                    println("图片出现错误哦；来自${file.ckname}的图片渲染失败")
+                }
+
+
+
+
+                val circlePaint = Paint().apply {
+                    color = Color.makeRGB(178,34,34)
+                    mode = PaintMode.FILL
+                }
+                //绘制右上角的圆
+                canvas.drawCircle(x+ imageWidth-5,y+5,20f,circlePaint)
+                val textCirclePaint = Paint().apply {
+                    color = Color.WHITE
+                    Paint
+                }
+                val Font1 = Font(Typeface.makeFromName("微软雅黑",FontStyle.BOLD), 20f)
+                val textWith1 = Font1.measureText(file.size.toString())
+                canvas.drawString(file.size.toString(), x+ imageWidth-textWith1.width/2-5, y + textWith1.height/2+5, Font1,textCirclePaint)
+
+            }
+
+            val tempFile = File.createTempFile("image", ".png")
+            val outputStream = FileOutputStream(tempFile)
+            val image = surface.makeImageSnapshot()
+            val encoded = image.encodeToData(EncodedImageFormat.PNG, 100)
+            encoded?.use { data ->
+                outputStream.write(data.bytes)
+            }
+
+            outputStream.close()
+            surface.close()
+
+            //val externalResource = tempFile.toExternalResource()
+            //tempFile.delete()
+            return tempFile
         }
-        val tempFile = File.createTempFile("image", ".png")
-        ImageIO.write(outputImage, "png", tempFile)
-        graphics.dispose()
-        val externalResource = tempFile.toExternalResource()
-        tempFile.delete()
-        return externalResource
-    }
-
-        private fun calculateScaleFactor(sourceWidth: Int, sourceHeight: Int, targetWidth: Int, targetHeight: Int): Double {
-            val widthRatio = targetWidth.toDouble() / sourceWidth.toDouble()
-            val heightRatio = targetHeight.toDouble() / sourceHeight.toDouble()
-            return if (widthRatio > heightRatio) heightRatio else widthRatio
-        }
-
-
-
     }
 }

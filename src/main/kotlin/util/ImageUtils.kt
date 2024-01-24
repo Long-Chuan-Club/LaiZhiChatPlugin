@@ -27,7 +27,7 @@ class ImageUtils: Closeable {
                     }
 
                     val randomImage = images[rad]
-                    logger.info { "本地已找到${randomImage.absolutePath}" }
+                    //logger.info { "本地已找到${randomImage.absolutePath}" }
                     val res = randomImage.toExternalResource().toAutoCloseable()
                     return res;
                 }
@@ -37,7 +37,6 @@ class ImageUtils: Closeable {
             }
             return null
         }
-
 
 
         /**

@@ -3,7 +3,6 @@ package org.longchuanclub.mirai.plugin
 import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
-import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
 import net.mamoe.mirai.event.events.MemberJoinEvent
 import net.mamoe.mirai.event.events.MemberJoinRequestEvent
 import net.mamoe.mirai.event.events.MemberLeaveEvent
@@ -30,7 +29,7 @@ object PluginMain : KotlinPlugin(
             来只&来点 功能 将群友话语做成可以出发的图
         """.trimIndent()
         )
-        dependsOn("xyz.cssxsh.mirai.plugin.mirai-hibernate-plugin", false)
+        //dependsOn("xyz.cssxsh.mirai.plugin.mirai-hibernate-plugin", false)
         // author 和 info 可以删除.
     }
 ) {

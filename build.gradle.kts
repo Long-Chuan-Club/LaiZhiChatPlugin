@@ -7,13 +7,13 @@ plugins {
 }
 val kotlin_Version = "1.8.20"
 group = "LaiZhi.Chat.Repeater"
-version = "0.2.4"
+version = "0.2.5"
 repositories {
     mavenCentral()
     maven("https://maven.aliyun.com/repository/public") // 阿里云国内代理仓库
 }
 dependencies {
-    compileOnly("xyz.cssxsh.mirai:mirai-hibernate-plugin:2.7.1")
+    //compileOnly("xyz.cssxsh.mirai:mirai-hibernate-plugin:2.7.1")
     implementation("io.ktor:ktor-client-okhttp:2.2.4")
     implementation("org.jetbrains.skiko:skiko-awt-runtime-windows-x64:0.7.80")
 }

@@ -16,7 +16,6 @@ object getImgList :SimpleCommand(PluginMain,"获取图库",description = "获取
     @Handler
     suspend fun handlerlist(sender: CommandSender){
         val files = File(PluginMain.dataFolder.absolutePath+"\\LaiZhi\\${sender.subject?.id}")
-        var cnt = 0;
         val images = files.listFiles()
         val simgs =  mutableListOf<ImageData>()
         images?.forEach {

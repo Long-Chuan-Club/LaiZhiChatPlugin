@@ -8,7 +8,7 @@ import java.io.File
 import java.io.FileOutputStream
 import org.jetbrains.skia.EncodedImageFormat
 import java.awt.SystemColor.text
-//@Deprecated("渲染获取图库列表已废弃. 等待新实现")
+
 class graphicsUtil {
 
 

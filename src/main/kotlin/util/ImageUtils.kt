@@ -9,6 +9,7 @@ import net.mamoe.mirai.utils.info
 import org.longchuanclub.mirai.plugin.PluginMain.logger
 import org.longchuanclub.mirai.plugin.PluginMain.resolveDataFile
 import java.io.Closeable
+import java.util.*
 import kotlin.random.Random
 
 class ImageUtils: Closeable {
@@ -27,7 +28,7 @@ class ImageUtils: Closeable {
                     }
 
                     val randomImage = images[rad]
-                    //logger.info { "本地已找到${randomImage.absolutePath}" }
+                    logger.info { "本地已找到${randomImage.absolutePath}" }
                     val res = randomImage.toExternalResource().toAutoCloseable()
                     return res;
                 }
@@ -39,12 +40,14 @@ class ImageUtils: Closeable {
         }
 
 
+
         /**
          * 保存图片到本地目录
          */
         suspend fun saveImage(group: Group,from: String, image: Image) {
             val url = image.queryUrl()
-            val filePath = "LaiZhi\\${group.id}\\${from}\\${image.imageId}"
+            val uniqueId = UUID.randomUUID().toString()
+            val filePath = "LaiZhi\\${group.id}\\${from}\\${uniqueId}.gif"
             val file  = resolveDataFile(filePath)
             if (!file.exists()) {
 

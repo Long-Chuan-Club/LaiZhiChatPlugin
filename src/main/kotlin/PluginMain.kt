@@ -3,6 +3,7 @@ package org.longchuanclub.mirai.plugin
 import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
+import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
 import net.mamoe.mirai.event.events.MemberJoinEvent
 import net.mamoe.mirai.event.events.MemberJoinRequestEvent
 import net.mamoe.mirai.event.events.MemberLeaveEvent
@@ -13,14 +14,13 @@ import org.longchuanclub.mirai.plugin.Command.getImgList
 import org.longchuanclub.mirai.plugin.Service.myEvent
 import org.longchuanclub.mirai.plugin.config.LzConfig
 import org.longchuanclub.mirai.plugin.util.SendTask
-import xyz.cssxsh.mirai.hibernate.MiraiHibernateRecorder
 
 
 object PluginMain : KotlinPlugin(
     JvmPluginDescription(
         id = "io.huvz.laizhi",
         name = "来只XX",
-        version = "0.2.4"
+        version = "0.2.5"
     ) {
         author("Huvz")
         info(
@@ -33,9 +33,6 @@ object PluginMain : KotlinPlugin(
         // author 和 info 可以删除.
     }
 ) {
-
-    val QuoteReply.originalMessageFromLocal: MessageChain
-        get() = MiraiHibernateRecorder[source].firstOrNull()?.toMessageChain() ?: source.originalMessage
 
     override fun onEnable() {
 

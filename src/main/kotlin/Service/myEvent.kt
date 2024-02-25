@@ -13,7 +13,6 @@ import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import net.mamoe.mirai.utils.info
 import org.longchuanclub.mirai.plugin.PluginMain
 import org.longchuanclub.mirai.plugin.PluginMain.logger
-import org.longchuanclub.mirai.plugin.PluginMain.originalMessageFromLocal
 import org.longchuanclub.mirai.plugin.config.LzConfig
 import org.longchuanclub.mirai.plugin.util.ImageUtils
 import org.longchuanclub.mirai.plugin.util.SendTask
@@ -32,29 +31,6 @@ object myEvent : SimpleListenerHost(){
     suspend fun GroupMessageEvent.onMessage(): ListeningStatus { // 可以抛出任何异常, 将在 handleException 处理
         val msg = message.content;
         val strname : String?
-        message[QuoteReply.Key]?.run {
-            val msg1 = msg.trim();
-            if(msg1.startsWith("@${bot.id} #删除")){
-                val original = originalMessageFromLocal
-                val inmage = original[Image]!!;
-                if(original[Image] is Image){
-                    val filename = msg.drop("@${bot.id} #删除".length)
-                    PluginMain.logger.info("文件名${filename}");
-                    if(ImageUtils.delImages(group,filename,inmage)) {
-                        SendTask.sendMessage(group,At(sender) +"删除成功");
-                    }
-                    else{
-                        SendTask.sendMessage(group,At(sender) +"删除失败,可能是文件夹被占用")
-                    }
-                }
-                else{
-                    SendTask.sendMessage(group,At(sender) +"没找到图片")
-                }
-                return ListeningStatus.LISTENING
-            }
-
-
-        }
         if(LzConfig.Graphicslist.contains(msg)){
             val files  = countFile(group)
             var cnt = 0;

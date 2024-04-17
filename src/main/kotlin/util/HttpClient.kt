@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 class HttpClient {
 
     companion object{
-        private val okHttpClient: OkHttpClient by lazy {
+        val okHttpClient: OkHttpClient by lazy {
             /**
              * 初始化
              */
@@ -17,7 +17,7 @@ class HttpClient {
                 .readTimeout(10, TimeUnit.SECONDS)
                 .build()
         }
-        public suspend fun getHttp(url:String):ByteArray{
+        fun getHttp(url:String):ByteArray{
             val request = Request.Builder()
                 .url(url)
                 .build()

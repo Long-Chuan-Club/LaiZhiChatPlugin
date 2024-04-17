@@ -49,14 +49,21 @@ object myEvent : SimpleListenerHost(){
 
 
         }
-        else if(msg.startsWith("#clear") && sender.id== LzConfig.adminQQid)
+        else if(msg.startsWith("#clear"))
         {
-            var filename = msg.drop(6).trim()
-            clear(filename)
-            SendTask.sendMessage(group,"清理成功")
-            return ListeningStatus.LISTENING
+            if( sender.id== LzConfig.adminQQid){
+                var filename = msg.drop(6).trim()
+                clear(filename)
+                SendTask.sendMessage(group,"清理成功")
+                return ListeningStatus.LISTENING
+
+            }
+            else{
+                SendTask.sendMessage(group,At(sender)+"你没权限执行")
+                return ListeningStatus.LISTENING
+            }
         }
-        else if(msg == "开关关键字" && sender.id== LzConfig.adminQQid){
+        else if(msg == "开关关键字"){
             if(isKey){
                 isKey=false;
                 SendTask.sendMessage(group,"哼哼，接下来你只能使用\"来只\"获取啦")

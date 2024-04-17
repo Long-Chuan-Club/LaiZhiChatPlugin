@@ -6,11 +6,13 @@ import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.info
+import okhttp3.Request
 import org.longchuanclub.mirai.plugin.PluginMain.logger
 import org.longchuanclub.mirai.plugin.PluginMain.resolveDataFile
 import java.io.Closeable
 import java.util.*
 import kotlin.random.Random
+
 
 class ImageUtils: Closeable {
     companion object
@@ -47,15 +49,28 @@ class ImageUtils: Closeable {
         suspend fun saveImage(group: Group,from: String, image: Image) {
             val url = image.queryUrl()
             val uniqueId = UUID.randomUUID().toString()
-            val filePath = "LaiZhi\\${group.id}\\${from}\\${uniqueId}.gif"
-            val file  = resolveDataFile(filePath)
-            if (!file.exists()) {
-
-                val imageByte = HttpClient.getHttp(url);
-                val fileParent = file.parentFile
-                if (!fileParent.exists()) fileParent.mkdirs()
+            var ParentfilePath = "LaiZhi\\${group.id}\\${from}"
+            val fileParent  = resolveDataFile(ParentfilePath)
+            if (!fileParent.exists()) fileParent.mkdirs()
+            //logger.info( "初始化目录：${ParentfilePath}")
+                val request = Request.Builder()
+                    .url(url)
+                    .build()
+                val reponse =  HttpClient.okHttpClient.newCall(request).execute()
+                val imageByte = reponse.body!!.bytes()
+                val contentType = reponse.header("Content-Type")
+                val fileType :String?;
+                when (contentType) {
+                    "image/jpeg" -> fileType = "jpg"
+                    "image/png" -> fileType = "png"
+                    "image/gif" -> fileType = "gif"
+                    else -> fileType = "jpg"
+                }
+                val filePath = ParentfilePath +  "\\${uniqueId}.${fileType}"
+                val file  = resolveDataFile(filePath)
                 file.writeBytes(imageByte)
-            }
+            logger.info( "写入文件：${filePath}")
+
         }
 
         /**

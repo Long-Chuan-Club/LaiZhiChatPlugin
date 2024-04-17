@@ -20,7 +20,7 @@ object PluginMain : KotlinPlugin(
     JvmPluginDescription(
         id = "io.huvz.laizhi",
         name = "来只XX",
-        version = "0.2.5"
+        version = "0.2.6"
     ) {
         author("Huvz")
         info(
@@ -39,21 +39,20 @@ object PluginMain : KotlinPlugin(
         LzConfig.reload()
         CommandManager.registerCommand(getImgList)
         globalEventChannel().registerListenerHost(myEvent)
+//        if(LzConfig.openWelcome){
+//            globalEventChannel().subscribeAlways<MemberLeaveEvent> {
+//                SendTask.sendMessage(group,"(˚ ˃̣̣̥᷄⌓˂̣̣̥᷅ ) 泪目，有人离开了群。")
+//            }
+//            globalEventChannel().subscribeAlways<MemberJoinEvent> {
+//                SendTask.sendMessage(group,At(member)+"欢迎进入本群哇！ ૮(˶ᵔ ᵕ ᵔ˶)ა")
+//
+//            }
+//        }
 
-        if(LzConfig.openWelcome){
-            globalEventChannel().subscribeAlways<MemberLeaveEvent> {
-                SendTask.sendMessage(group,"(˚ ˃̣̣̥᷄⌓˂̣̣̥᷅ ) 泪目，有人离开了群。")
-            }
-            globalEventChannel().subscribeAlways<MemberJoinEvent> {
-                SendTask.sendMessage(group,At(member)+"欢迎进入本群哇！ ૮(˶ᵔ ᵕ ᵔ˶)ა")
-
-            }
-        }
-
-        globalEventChannel().subscribeAlways<MemberJoinRequestEvent> {
-            //自动同意加群申请 如果不在黑名单里
-          if(!LzConfig.Blacklist.contains(this.fromId)) accept()
-        }
+//        globalEventChannel().subscribeAlways<MemberJoinRequestEvent> {
+//            //自动同意加群申请 如果不在黑名单里
+//          if(!LzConfig.Blacklist.contains(this.fromId)) accept()
+//        }
         logger.info { "Plugin loaded" }
     }
 

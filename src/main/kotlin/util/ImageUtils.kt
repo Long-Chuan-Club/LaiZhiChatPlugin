@@ -58,6 +58,7 @@ class ImageUtils: Closeable {
                     .build()
                 val reponse =  HttpClient.okHttpClient.newCall(request).execute()
                 val imageByte = reponse.body!!.bytes()
+                if(imageByte.isEmpty()) throw Exception("没数据")
                 val contentType = reponse.header("Content-Type")
                 val fileType :String?;
                 when (contentType) {

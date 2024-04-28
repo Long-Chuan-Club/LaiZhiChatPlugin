@@ -1,5 +1,6 @@
 package org.longchuanclub.mirai.plugin.Service
 
+import io.ktor.client.plugins.api.*
 import net.mamoe.mirai.console.plugin.version
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.Member
@@ -9,6 +10,7 @@ import net.mamoe.mirai.event.SimpleListenerHost
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.event.globalEventChannel
 import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import net.mamoe.mirai.utils.info
 import org.longchuanclub.mirai.plugin.PluginMain
@@ -212,9 +214,15 @@ object myEvent : SimpleListenerHost(){
                 val image: Image? = chain.findIsInstance<Image>()
 
                 if(image!=null) {
+                    try{
 
-                    arg?.let { it1 -> ImageUtils.saveImage(group,it1,image) }
-                    SendTask.sendMessage(group, chain+ PlainText("保存成功噢"));
+                        arg?.let { it1 -> ImageUtils.saveImage(group,it1,image) }
+                        SendTask.sendMessage(group, chain+ PlainText("保存成功噢"));
+                    }catch (e:Exception)
+                    {
+                        SendTask.sendMessage(group,At(sender1)+"保存失败，请尝试使用电脑qq发送")
+                    }
+
                     return@subscribe ListeningStatus.STOPPED
                 }
 

@@ -11,7 +11,7 @@ import org.longchuanclub.mirai.plugin.entity.ImageData
 import org.longchuanclub.mirai.plugin.util.graphicsUtil
 import java.io.File
 
-object getImgList :SimpleCommand(PluginMain,"获取图库",description = "获取全部的图库列表") {
+object getImgList :SimpleCommand(PluginMain,"getGallery",description = "获取全部的图库列表") {
 
     @Handler
     suspend fun handlerlist(sender: CommandSender){

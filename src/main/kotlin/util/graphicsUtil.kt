@@ -26,7 +26,7 @@ class graphicsUtil {
         //fun draw(fileList: MutableList<ImageData>): ExternalResource? {
         //下方为本地测试用的
         fun draw(fileList: MutableList<ImageData>): File {
-            val title = "你群图库列表"
+            val title = "图库列表"
 
 
             val numRows = (fileList.size + numImagesPerRow - 1) / numImagesPerRow

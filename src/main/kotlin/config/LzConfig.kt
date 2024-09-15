@@ -21,14 +21,14 @@ internal object LzConfig : AutoSavePluginConfig("LaiZhiConfig"){
     var ProtectImageList:List<String?> by value()
 
     @ValueDescription("消息发送延迟")
-    var messageIntervalTime :Long by value(10L);
+    var messageIntervalTime :Long by value(120L);
 
     @ValueDescription("黑名单")
     var Blacklist:List<Long> by value()
 
     @ValueDescription("获取图库指令列表")
     var Graphicslist:List<String> by value(listOf("#获取图库","#图库","本群图库"))
-
-
+    @ValueDescription("开启群聊")
+    var enablelist:List<String> by value(listOf("114514"))
 
 }

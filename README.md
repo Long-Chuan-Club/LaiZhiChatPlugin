@@ -6,7 +6,8 @@
 [![Static Badge](https://img.shields.io/badge/release-2.0.0-blue)](https://github.com/Long-Chuan-Club/LaiZhiChatPlugin/releases)
 
 
-:warning:  **本插件没有配置文件**<br>
+:warning:  **使用前需要先下载 [MiSans](https://hyperos.mi.com/font/zh/download/) 字体**<br>
+:warning: 由于项目更迭，新版本无法直接使用，插件处于暂不可用阶段
 ## 主要功能 ：关键字触发发图
 
 无需配置，直接扔进 `bot/plugins` 即可使用
@@ -30,12 +31,6 @@
 <img src="docs/kgkey.png">
 
 在群里发送 `/获取图库` 机器人会返回一张渲染好的图片列表
-
-<img src="docs/hqlist.png">
-
-如果发送的是 `#获取图库` 返回的是文字列表
-
-<img src="docs/hqlist2.png">
 
 当开关关键字=true时， 只要聊天中出现了关键字就会自动触发。
 
